@@ -1,4 +1,5 @@
 import { Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
+
 import { InsertChange } from '@schematics/angular/utility/change';
 
 const fs = require('fs');
@@ -36,15 +37,16 @@ export class ${camelName}RoutingModule { }
 `;
 
     const ModuleSpecFile = `import { ${camelName}Module } from './${name}.module';
+    
 describe('${camelName}Module', () => {
-let ${lowerCamelName}Module: ${camelName}Module;
+    let ${lowerCamelName}Module: ${camelName}Module;
 
 beforeEach(() => {
-${lowerCamelName}Module = new ${camelName}Module();
+    ${lowerCamelName}Module = new ${camelName}Module();
 });
 
 it('should create an instance', () => {
-expect(${lowerCamelName}Module).toBeTruthy();
+    expect(${lowerCamelName}Module).toBeTruthy();
 });
 });
 `;
@@ -61,17 +63,17 @@ import { ${camelName}RoutingModule } from './${name}-routing.module';
 
 /** undefined */
 @NgModule({
-imports: [
-CommonModule,
-SharedModule,
-${camelName}RoutingModule,
-EffectsModule.forFeature([
-]),
-],
-declarations: [
-// Containers
-// Components
-],
+    imports: [
+        CommonModule,
+        SharedModule,
+        ${camelName}RoutingModule,
+        EffectsModule.forFeature([
+        ]),
+    ],
+    declarations: [
+        // Containers
+        // Components
+    ],
 })
 export class ${camelName}Module { }`;
 
