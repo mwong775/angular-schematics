@@ -1,4 +1,5 @@
 import { Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
+import { InsertChange } from '@schematics/angular/utility/change';
 
 const fs = require('fs');
 
@@ -19,6 +20,7 @@ export function component(_options: any): Rule {
     }
 
     const AnimationsFile = `import { trigger, group, query, animateChild, state, style, animate, transition } from '@angular/animations';
+
 export const ${camelName}Animations = [
 ];
 `;
@@ -29,26 +31,11 @@ export const ${camelName}Animations = [
 }`;
 
     const HTMLFile = `<div class="${name}-container">
-${name} works!
+    ${name} works!
 </div>`;
 
-    const ComponentFile = `import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+    const ComponentFile = `import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { ${camelName}Animations } from './${name}.animations';
-import { ParamMap, ActivatedRoute } from '@angular/router';
-import { Store, select } from '@ngrx/store';
-import * as fromStore from '../../core/store/app.reducer';
-import * as fromAuth from '../../core/store/auth/auth.reducer';
-import { FirebaseService } from '../../core/firebase/firebase.service';
-import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { withLatestFrom, take, takeUntil } from 'rxjs/operators';
-
-import { ${camelName}State } from './+state/${name}.state';
-import { ${camelName}Selectors } from './+state/${name}.selectors';
-
-import { LoadData, Cleanup } from './+state/${name}.actions';
-import { RouterNavigate } from '../../core/store/app.actions';
-
-import { User } from '../../core/store/user/user.model';
 
 /** test */
 @Component({
@@ -58,63 +45,27 @@ import { User } from '../../core/store/user/user.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: ${camelName}Animations,
 })
-export class ${camelName}Component implements OnInit, OnDestroy {
+export class ${camelName}Component implements OnInit {
 
-  // --------------- ROUTE PARAMS & CURRENT USER ---------
+  // --------------- INPUTS AND OUTPUTS ---------
 
 
   // --------------- LOCAL UI STATE ----------------------
 
 
-  // --------------- DB ENTITY DATA ----------------------
+    constructor() { }
 
-  /** Container id for selectors and loading. */
-  containerId: string = this.db.createId();
+    ngOnInit() {
+    }
 
-  // --------------- DATA BINDING STREAMS ----------------
+  // --------------- DATA BINDING FUNCTIONS ----------------
 
 
-  // --------------- EVENT BINDING STREAMS ---------------
+  // --------------- EVENT BINDING FUNCTIONS ---------------
 
 
   // --------------- OTHER -------------------------------
 
-  /** Unsubscribe observable for subscriptions. */
-  unsubscribe$: Subject<void> = new Subject();
-
-  constructor(
-    private state: ${camelName}State,
-    private route: ActivatedRoute,
-    private selectors: ${camelName}Selectors,
-    private store: Store<fromStore.State>,
-    private db: FirebaseService,
-  ) {
-  }
-
-  ngOnInit() {
-
-    // --------------- EVENT HANDLING ----------------------
-
-
-    // --------------- LOAD DATA ---------------------------
-
-    // Once everything is set up, load the data for the role.
-    this.store.dispatch( new LoadData({
-      containerId: this.containerId,
-    }) );
-  }
-
-  ngOnDestroy() {
-    // Unsubscribe subscriptions.
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-
-    // Unsubscribe from firebase connection from load and free up memoized selector values.
-    this.store.dispatch( new Cleanup({
-      containerId: this.containerId,
-    }) );
-    this.selectors.cleanup(this.containerId);
-  }
 }
 `;
 

@@ -14,7 +14,7 @@
     },
     "module": {
       "type": "string",
-      "x-prompt": "Which module should we generate the container in?"
+      "x-prompt": "Which module is the container in?"
     },
     "container": {
       "type": "string",
