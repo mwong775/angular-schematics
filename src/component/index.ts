@@ -96,7 +96,24 @@ describe('${camelName}Component', () => {
 });
 `;
     
+    let filePath = `./${module}/${module}.module.ts`;
+    // insert a new change
+    let text = tree.read(filePath); // reads the file from the tree
+    if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
 
+    let sourceText = text.toString('utf-8');
+    let label = '// Components';
+    let index = sourceText.indexOf(label) + label.length;
+    // declares import
+    const insertChange = new InsertChange(filePath, index, `\nimport { ${camelName}Component } from './${container}/${name}/${name}.component';`);
+    let secondHalf = sourceText.slice(index);
+    index = index + secondHalf.indexOf(label) + label.length;
+    // adds import to list
+    const insertChange2 = new InsertChange(filePath, index, `\n\t\t${camelName}Component,`);
+    const exportRecorder = tree.beginUpdate(filePath);
+    exportRecorder.insertLeft(insertChange.pos, insertChange.toAdd);
+    exportRecorder.insertLeft(insertChange2.pos, insertChange2.toAdd);
+    tree.commitUpdate(exportRecorder);
 
 
     // create directories before adding files
