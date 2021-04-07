@@ -23,6 +23,7 @@
   },
   "required": [
     "name",
-    "module"
+    "module",
+    "container"
   ]
 }

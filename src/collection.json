@@ -15,6 +15,11 @@
       "description": "A blank schematic.",
       "factory": "./component/index#component",
       "schema": "./component/schema.json"
+    },
+    "entity": {
+      "description": "A blank schematic.",
+      "factory": "./entity/index#entity",
+      "schema": "./entity/schema.json"
     }
   }
 }
