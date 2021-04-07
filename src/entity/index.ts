@@ -1,6 +1,7 @@
-import { Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
+import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
-import { InsertChange } from '@schematics/angular/utility/change';
+// import { InsertChange } from '@schematics/angular/utility/change';
+import { CamelCaseFormatter } from '../shared/camelcase-formatter';
 
 const fs = require('fs');
 
@@ -9,17 +10,8 @@ const fs = require('fs');
 export function entity(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const { name } = _options;
-    let camelName = name;
-    let lowerCamelName = name;
-    // e.g. list-style-image to ListStyleImage
-    if(name.indexOf('-') != -1) {
-        const names = name.split('-');
-        for(var i = 0; i < names.length ; i++){
-            names[i] = names[i].charAt(0).toUpperCase() + names[i].substr(1);
-        }  
-        camelName = names.join("");
-        lowerCamelName = camelName.charAt(0).toLowerCase() + camelName.substr(1);
-    }
+    let camelName = CamelCaseFormatter(name, false);
+    let lowerCamelName = CamelCaseFormatter(name, true);
 
     const ActionsFile = `import { Action } from '@ngrx/store';
 import { LoadAction } from '../app.actions';
