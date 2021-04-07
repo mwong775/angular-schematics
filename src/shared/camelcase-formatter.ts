@@ -1,6 +1,6 @@
 export function CamelCaseFormatter(name: string, lower: boolean) {
     // e.g. list-style-image to ListStyleImage
-    let camelName = name;
+    let camelName = name.charAt(0).toUpperCase() + name.substr(1);
     if(name.indexOf('-') != -1) {
         const names = name.split('-');
         for(var i = 0; i < names.length ; i++){

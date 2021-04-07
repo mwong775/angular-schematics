@@ -1,6 +1,7 @@
-import { Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
-import { InsertChange } from '@schematics/angular/utility/change';
+import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+
 import { CamelCaseFormatter } from '../shared/camelcase-formatter';
+import { AddStatements } from '../shared/statements-adder';
 
 const fs = require('fs');
 
@@ -9,7 +10,7 @@ const fs = require('fs');
 export function component(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const { name, module, container } = _options;
-    let camelName = CamelCaseFormatter(name, false);
+    const camelName = CamelCaseFormatter(name, false);
 
     const AnimationsFile = `import { trigger, group, query, animateChild, state, style, animate, transition } from '@angular/animations';
 
@@ -88,24 +89,10 @@ describe('${camelName}Component', () => {
 });
 `;
     
-    let filePath = `./src/app/${module}/${module}.module.ts`;
-    // insert a new change
-    let text = tree.read(filePath); // reads the file from the tree
-    if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
-
-    let sourceText = text.toString('utf-8');
-    let label = '// Components';
-    let index = sourceText.indexOf(label) + label.length;
-    // declares import
-    const insertChange = new InsertChange(filePath, index, `\nimport { ${camelName}Component } from './${container}/${name}/${name}.component';`);
-    let secondHalf = sourceText.slice(index);
-    index = index + secondHalf.indexOf(label) + label.length;
-    // adds import to list
-    const insertChange2 = new InsertChange(filePath, index, `\n\t\t${camelName}Component,`);
-    const exportRecorder = tree.beginUpdate(filePath);
-    exportRecorder.insertLeft(insertChange.pos, insertChange.toAdd);
-    exportRecorder.insertLeft(insertChange2.pos, insertChange2.toAdd);
-    tree.commitUpdate(exportRecorder);
+    const filePath = `./src/app/${module}/${module}.module.ts`;
+    const labels = ['// Components', '// Components'];
+    const statements = [`import { ${camelName}Component } from './${container}/${name}/${name}.component';`, `\t\t${camelName}Component,`];
+    AddStatements(filePath, labels, statements, tree);
 
     // create directories before adding files
     const dir = `./src/app/${module}/${container}/${name}`;

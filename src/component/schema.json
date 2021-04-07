@@ -12,13 +12,13 @@
       "type": "string",
       "x-prompt": "What should we name the files?"
     },
-    "module": {
-      "type": "string",
-      "x-prompt": "Which module is the container in?"
-    },
     "container": {
       "type": "string",
       "x-prompt": "Which container should we generate the component in?"
+    },
+    "module": {
+      "type": "string",
+      "x-prompt": "Which module is the container in?"
     }
   },
   "required": [

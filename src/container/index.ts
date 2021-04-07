@@ -1,7 +1,7 @@
-import { Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
+import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
-import { InsertChange } from '@schematics/angular/utility/change';
 import { CamelCaseFormatter } from '../shared/camelcase-formatter';
+import { AddStatements } from '../shared/statements-adder';
 
 const fs = require('fs');
 
@@ -10,8 +10,8 @@ const fs = require('fs');
 export function container(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const { name, module } = _options;
-    let camelName = CamelCaseFormatter(name, false);
-    
+    const camelName = CamelCaseFormatter(name, false);
+
     const ActionsFile = `import { Action } from '@ngrx/store';
 
 export enum ${camelName}ActionTypes {
@@ -261,47 +261,15 @@ export class ${camelName}Component implements OnInit, OnDestroy {
     const ModuleRoutingFile = `${module}-routing.module.ts`;
     const ModuleFile = `${module}.module.ts`;
 
-    let filePath = `./src/app/${module}/${ModuleRoutingFile}`;
-    // insert a new change
-    let text = tree.read(filePath); // reads the file from the tree
-    if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
-    
-    let sourceText = text.toString('utf-8');
-    let label = '// Containers';
-    let index = sourceText.indexOf(label) + label.length;
-    // declares import
-    const insertChange = new InsertChange(filePath, index, `\nimport { ${camelName}Component } from './${name}/${name}.component';`);
-    label = 'const routes: Routes = [';
-    index = sourceText.indexOf(label) + label.length;
-    // adds container path to list of routes 
-    const insertChange2 = new InsertChange(filePath, index, `\n\t{ path: '${name}', component: ${camelName}Component }`);
-    const exportRecorder = tree.beginUpdate(filePath);
-    exportRecorder.insertLeft(insertChange.pos, insertChange.toAdd);
-    exportRecorder.insertLeft(insertChange2.pos, insertChange2.toAdd);
-    tree.commitUpdate(exportRecorder);
+    const filePath = `./src/app/${module}/${ModuleRoutingFile}`;
+    const labels = ['// Containers', 'const routes: Routes = ['];
+    const statements = [`import { ${camelName}Component } from './${name}/${name}.component';`, `\t{ path: '${name}', component: ${camelName}Component }`];
+    AddStatements(filePath, labels, statements, tree);
 
-    filePath = `./src/app/${module}/${ModuleFile}`;
-    // insert a new change
-    text = tree.read(filePath); // reads the file from the tree
-    if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
-    
-    sourceText = text.toString('utf-8');
-    label = '// Containers';
-    index = sourceText.indexOf(label) + label.length;
-    // declares imports
-    const insertChange3 = new InsertChange(filePath, index, `\nimport { ${camelName}Component } from './${name}/${name}.component';\nimport { ${camelName}Effects } from './${name}/+state/${name}.effects';`);
-    label = 'EffectsModule.forFeature([';
-    index = sourceText.indexOf(label) + label.length;
-    const insertChange4 = new InsertChange(filePath, index, `\n\t\t\t${camelName}Effects,`);
-    label = '// Containers';
-    let secondHalf = sourceText.slice(index);
-    index = index + secondHalf.indexOf(label) + label.length;
-    const insertChange5 = new InsertChange(filePath, index, `\n\t\t${camelName}Component,`);
-    const exportRecorder2 = tree.beginUpdate(filePath);
-    exportRecorder2.insertLeft(insertChange3.pos, insertChange3.toAdd);
-    exportRecorder2.insertLeft(insertChange4.pos, insertChange4.toAdd);
-    exportRecorder2.insertLeft(insertChange5.pos, insertChange5.toAdd);
-    tree.commitUpdate(exportRecorder2);
+    const filePath2 = `./src/app/${module}/${ModuleFile}`;
+    const labels2 = ['// Containers', 'EffectsModule.forFeature([', '// Containers'];
+    const statements2 = [`import { ${camelName}Component } from './${name}/${name}.component';\nimport { ${camelName}Effects } from './${name}/+state/${name}.effects';`, `\t\t\t${camelName}Effects,`, `\t\t${camelName}Component,`]; 
+    AddStatements(filePath2, labels2, statements2, tree);
 
     // create directories before adding files
     const dir = `./src/app/${module}/${name}`;
