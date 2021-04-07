@@ -1,7 +1,6 @@
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
 
-// import { InsertChange } from '@schematics/angular/utility/change';
-import { CamelCaseFormatter } from '../shared/camelcase-formatter';
+import { InsertChange } from '@schematics/angular/utility/change';
 
 const fs = require('fs');
 
@@ -10,8 +9,17 @@ const fs = require('fs');
 export function entity(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const { name } = _options;
-    let camelName = CamelCaseFormatter(name, false);
-    let lowerCamelName = CamelCaseFormatter(name, true);
+    let camelName = name;
+    let lowerCamelName = name;
+    // e.g. list-style-image to ListStyleImage
+    if(name.indexOf('-') != -1) {
+        const names = name.split('-');
+        for(var i = 0; i < names.length ; i++){
+            names[i] = names[i].charAt(0).toUpperCase() + names[i].substr(1);
+        }  
+        camelName = names.join("");
+        lowerCamelName = camelName.charAt(0).toLowerCase() + camelName.substr(1);
+    }
 
     const ActionsFile = `import { Action } from '@ngrx/store';
 import { LoadAction } from '../app.actions';
@@ -482,9 +490,16 @@ export class ${camelName}Service {
     return this.db.queryListOnce<${camelName}, T>('${lowerCamelName}s', queryParams, queryOptions, childrenFn);
   }
 }`;
-    
+
+    addStatement('./src/app/core/core.module.ts', '// Entity Effects', `import { ${camelName} } from ./store/${name}/${name}.effects;`, tree);
+    addStatement('/snackbar/snackbar.effects', '// Entity Effects', `${camelName}Effects,`, tree);
+    addStatement('src/app/core/firebase/firebase.mock.service.ts', '// Entity Models', `import { ${camelName} } from '../store/${name}/${name}.model';`, tree);
+    addStatement('src/app/core/firebase/firebase.mock.service.ts', 'this.mockDBChanges = {', `\t\t\t${lowerCamelName}s: new BehaviorSubject<Array<{ type: string, result: ${camelName} }>>\n(this.mockDBService.getInitialDBStateChanges('${lowerCamelName}s')),`, tree);
+    addStatement('src/app/core/store/app.reducer.ts', '// Entity Reducers', `import * as from${camelName} from './${name}/${name}.reducer';`, tree);
+
+
     // create directories before adding files
-    const dir = `./${name}`;
+    const dir = `./src/app/core/store/${name}`;
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }
@@ -497,4 +512,18 @@ export class ${camelName}Service {
     tree.create(`${dir}/${name}.service.ts`, ServiceFile);
     return tree;
   };
+}
+
+function addStatement(filePath: string, label: string, statement: string, tree: Tree) {
+  let text = tree.read(filePath); // reads the file from the tree
+  if (!text) {
+    throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
+  }
+  let sourceText = text.toString('utf-8');
+  let index = sourceText.indexOf(label) + label.length;
+  // declares import
+  const insertChange = new InsertChange(filePath, index, `\n${statement}`);
+  const exportRecorder = tree.beginUpdate(filePath);
+  exportRecorder.insertLeft(insertChange.pos, insertChange.toAdd);
+  tree.commitUpdate(exportRecorder); 
 }
