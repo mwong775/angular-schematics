@@ -10,7 +10,13 @@ Used to generate modules, containers, components, and entities.
 2. Run `npm install -g @angular-devkit/schematics-cli` to install globally
 3. Run `npm install` & `npm link`
 4. Run `npm link angular-schematic` in project directory
-5. Run `ng generate angular-schematic:<type>` to generate files (`type` = module, container, component, or entity)
+5. Run `ng generate angular-schematic:<schematic>` to generate files (`schematic` = module, container, component, or entity)
+
+### Developing
+
+1. Steps 1-2 above
+2. Run `npm install`
+3. Run `schematics .:<schematic> --dry-run=false` to test/debug generations (`--debug=false` also works, `schematic` = module, container, component, or entity)
 
 ### Testing
 
