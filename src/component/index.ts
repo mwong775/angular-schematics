@@ -96,7 +96,7 @@ describe('${camelName}Component', () => {
 });
 `;
     
-    let filePath = `./${module}/${module}.module.ts`;
+    let filePath = `./src/app/${module}/${module}.module.ts`;
     // insert a new change
     let text = tree.read(filePath); // reads the file from the tree
     if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
@@ -117,7 +117,7 @@ describe('${camelName}Component', () => {
 
 
     // create directories before adding files
-    const dir = `./${module}/${container}/${name}`;
+    const dir = `./src/app/${module}/${container}/${name}`;
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }

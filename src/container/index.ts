@@ -268,7 +268,7 @@ export class ${camelName}Component implements OnInit, OnDestroy {
     const ModuleRoutingFile = `${module}-routing.module.ts`;
     const ModuleFile = `${module}.module.ts`;
 
-    let filePath = `./${module}/${ModuleRoutingFile}`;
+    let filePath = `./src/app/${module}/${ModuleRoutingFile}`;
     // insert a new change
     let text = tree.read(filePath); // reads the file from the tree
     if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
@@ -287,7 +287,7 @@ export class ${camelName}Component implements OnInit, OnDestroy {
     exportRecorder.insertLeft(insertChange2.pos, insertChange2.toAdd);
     tree.commitUpdate(exportRecorder);
 
-    filePath = `./${module}/${ModuleFile}`;
+    filePath = `./src/app/${module}/${ModuleFile}`;
     // insert a new change
     text = tree.read(filePath); // reads the file from the tree
     if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
@@ -311,7 +311,7 @@ export class ${camelName}Component implements OnInit, OnDestroy {
     tree.commitUpdate(exportRecorder2);
 
     // create directories before adding files
-    const dir = `./${module}/${name}`;
+    const dir = `./src/app/${module}/${name}`;
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }
@@ -320,7 +320,7 @@ export class ${camelName}Component implements OnInit, OnDestroy {
       fs.mkdirSync(statePath);
   }
 
-    tree.create(`${statePath}/${name}.action.ts`, ActionsFile);
+    tree.create(`${statePath}/${name}.actions.ts`, ActionsFile);
     tree.create(`${statePath}/${name}.effects.ts`, EffectsFile);
     tree.create(`${statePath}/${name}.model.ts`, '');
     tree.create(`${statePath}/${name}.selectors.ts`, SelectorsFile);

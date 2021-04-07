@@ -8,6 +8,12 @@ const fs = require('fs');
 // per file.
 export function module(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
+    const angularConfig = 'angular.json';
+	
+    // Let's make sure we're in an angular workspace
+    if (!tree.exists(angularConfig))
+        throw new SchematicsException('???This is not an Angular worksapce! Try again in an Angular project.');
+        
     const { name } = _options;
     let camelName = name;
     let lowerCamelName = name;
@@ -77,7 +83,7 @@ import { ${camelName}RoutingModule } from './${name}-routing.module';
 })
 export class ${camelName}Module { }`;
 
-    const filePath = 'app.module.ts';
+    const filePath = 'src/app/app.module.ts';
     // insert a new change
     let text = tree.read(filePath); // reads the file from the tree
     if (!text) throw new SchematicsException(`${filePath} does not exist.`); // throw an error if the file doesn't exist
@@ -97,7 +103,7 @@ export class ${camelName}Module { }`;
     tree.commitUpdate(exportRecorder);
     
     // create directory before adding files
-    const dir = `./${name}`;
+    const dir = `./src/app/${name}`;
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }
