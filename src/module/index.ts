@@ -76,7 +76,7 @@ export class ${camelName}Module { }`;
 
     const filePath = 'src/app/app.module.ts';
     const labels = ['// Feature Modules', '// Feature Modules'];
-    const statements = [`import { ${camelName}Module } from './${name}/${name}.module';`, `\t\t${camelName}Module,`];
+    const statements = [`import { ${camelName}Module } from './${name}/${name}.module';`, `    ${camelName}Module,`];
     AddStatements(filePath, labels, statements, tree);
     
     // create directory before adding files

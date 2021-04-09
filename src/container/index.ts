@@ -263,12 +263,12 @@ export class ${camelName}Component implements OnInit, OnDestroy {
 
     const filePath = `./src/app/${module}/${ModuleRoutingFile}`;
     const labels = ['// Containers', 'const routes: Routes = ['];
-    const statements = [`import { ${camelName}Component } from './${name}/${name}.component';`, `\t{ path: '${name}', component: ${camelName}Component }`];
+    const statements = [`import { ${camelName}Component } from './${name}/${name}.component';`, `  { path: '${name}', component: ${camelName}Component }`];
     AddStatements(filePath, labels, statements, tree);
 
     const filePath2 = `./src/app/${module}/${ModuleFile}`;
     const labels2 = ['// Containers', 'EffectsModule.forFeature([', '// Containers'];
-    const statements2 = [`import { ${camelName}Component } from './${name}/${name}.component';\nimport { ${camelName}Effects } from './${name}/+state/${name}.effects';`, `\t\t\t${camelName}Effects,`, `\t\t${camelName}Component,`]; 
+    const statements2 = [`import { ${camelName}Component } from './${name}/${name}.component';\nimport { ${camelName}Effects } from './${name}/+state/${name}.effects';`, `      ${camelName}Effects,`, `    ${camelName}Component,`]; 
     AddStatements(filePath2, labels2, statements2, tree);
 
     // create directories before adding files

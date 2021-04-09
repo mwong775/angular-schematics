@@ -91,7 +91,7 @@ describe('${camelName}Component', () => {
     
     const filePath = `./src/app/${module}/${module}.module.ts`;
     const labels = ['// Components', '// Components'];
-    const statements = [`import { ${camelName}Component } from './${container}/${name}/${name}.component';`, `\t\t${camelName}Component,`];
+    const statements = [`import { ${camelName}Component } from './${container}/${name}/${name}.component';`, `    ${camelName}Component,`];
     AddStatements(filePath, labels, statements, tree);
 
     // create directories before adding files
