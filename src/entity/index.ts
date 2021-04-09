@@ -483,11 +483,58 @@ export class ${camelName}Service {
   }
 }`;
 
-    AddStatements('./src/app/core/core.module.ts', ['// Entity Effects'], [`import { ${camelName} } from ./store/${name}/${name}.effects;`], tree);
-    AddStatements('/snackbar/snackbar.effects', ['// Entity Effects'], [`${camelName}Effects,`], tree);
-    AddStatements('src/app/core/firebase/firebase.mock.service.ts', ['// Entity Models', 'this.mockDBChanges = {'], [`import { ${camelName} } from '../store/${name}/${name}.model';`, `\t\t\t${lowerCamelName}s: new BehaviorSubject<Array<{ type: string, result: ${camelName} }>>\n(this.mockDBService.getInitialDBStateChanges('${lowerCamelName}s')),`], tree);
-    AddStatements('src/app/core/store/app.reducer.ts', ['// Entity Reducers'], [`import * as from${camelName} from './${name}/${name}.reducer';`], tree);
-
+    AddStatements(
+      'src/app/core/core.module.ts', 
+      ['// Entity Effects'],
+      [`import { ${camelName} } from ./store/${name}/${name}.effects;`],
+      tree
+    );
+    AddStatements(
+      'src/app/snackbar/snackbar.effects',
+      ['// Entity Effects'],
+      [`${camelName}Effects,`],
+      tree
+    );
+    AddStatements(
+      'src/app/core/firebase/firebase.mock.service.ts',
+      [
+        '// Entity Models',
+        'this.mockDBChanges = {'
+      ],
+      [
+        `import { ${camelName} } from '../store/${name}/${name}.model';`,
+        `\t\t\t${lowerCamelName}s: new BehaviorSubject<Array<{ type: string, result: ${camelName} }>>\n(this.mockDBService.getInitialDBStateChanges('${lowerCamelName}s')),`
+      ],
+      tree
+    );
+    AddStatements(
+      'src/app/core/store/app.reducer.ts',
+      [
+        '// Entity Reducers',
+        '// Entity State',
+        '// Entity Reducers'
+      ], 
+      [
+        `import * as from${camelName} from './${name}/${name}.reducer';`,
+        `${lowerCamelName}: from${camelName}.State`, 
+        `${lowerCamelName}: from${camelName}.reducer`
+      ], 
+      tree
+    );
+    AddStatements(
+      'src/app/core/store/app.selectors.ts',
+      [
+        '// Entity Selectors',
+        '// Entity Selectors',
+        '// Entity Selectors'
+      ], 
+      [
+        `import { ${camelName}Service } from './${name}/${name}.service';`,
+        `private ${lowerCamelName}: ${camelName}Service`,
+        `public get${camelName} = this.${lowerCamelName}.get${camelName};\npublic get${camelName}s = this.${lowerCamelName}.get${camelName}s;\npublic select${camelName} = this.${lowerCamelName}.select${camelName}\npublic select${camelName}s = this.${lowerCamelName}.select${camelName}s`
+      ],
+      tree
+    );
 
     // create directories before adding files
     const dir = `./src/app/core/store/${name}`;
