@@ -15,7 +15,7 @@ export function entity(_options: any): Rule {
 
     const ActionsFile = `import { Action } from '@ngrx/store';
 import { LoadAction } from '../app.actions';
-import { ${camelName} } from './${camelName}.model';
+import { ${camelName} } from './${name}.model';
 
 export enum ${camelName}ActionTypes {
   LOAD = '[${camelName}] load ${lowerCamelName}',
