@@ -490,7 +490,7 @@ export class ${camelName}Service {
         '// Entity Effects'
       ],
       [
-        `import { ${camelName} } from './store/${name}/${name}.effects';`,
+        `import { ${camelName}Effects } from './store/${name}/${name}.effects';`,
         `      ${camelName}Effects,`
       ],
       tree
