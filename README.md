@@ -27,6 +27,10 @@ Check the documentation with
 schematics --help
 ```
 
+### Important Notes
+
+When generating a component: If the project has an import error for `waitForAsync` in `<component-name>.component.spec.ts`, update all instances to `async`.
+
 ### Unit Testing
 
 `npm run test` will run the unit tests, using Jasmine as a runner and test framework.
