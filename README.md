@@ -1,5 +1,7 @@
 # Getting Started With Schematics
 
+NOTE: repository moved to [Tech4Good Lab](https://github.com/tech4good-lab).
+
 This repository is a basic Schematic implementation that serves as a starting point to create and publish Schematics to NPM.
 
 Used to generate modules, containers, components, and entities for Angular projects.
